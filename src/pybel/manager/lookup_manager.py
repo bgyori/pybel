@@ -66,7 +66,7 @@ class LookupManager(BaseManager):
         :param str name: An author's name
         :rtype: Optional[Author]
         """
-        return self.session.query(Author).filter(Author.name == name).one_or_none()
+        return self.session.query(Author).filter(Author.sha512 == Author.hash_name(name)).one_or_none()
 
     def get_evidence_by_hash(self, evidence_hash):
         """Looks up evidence by its hash

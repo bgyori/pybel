@@ -3,6 +3,7 @@
 """This module contains the SQLAlchemy database models that support the definition cache and graph cache."""
 
 import datetime
+import hashlib
 
 from sqlalchemy import (
     Boolean, Column, Date, DateTime, ForeignKey, Integer, LargeBinary, String, Table, Text,
@@ -631,7 +632,21 @@ class Author(Base):
     __tablename__ = AUTHOR_TABLE_NAME
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False, unique=True, index=True)
+    sha512 = Column(String(255), index=True)
+    name = Column(String(255), nullable=False, index=True, doc='The name of the author')
+
+    @staticmethod
+    def hash_name(name):
+        return hashlib.sha512(name.encode('utf8')).hexdigest()
+
+    @staticmethod
+    def from_name(name):
+        """Makes an author model from the name and wraps hashing the name
+
+        :param str name: The name of the author
+        :rtype: Author
+        """
+        return Author(name=name, sha512=Author.hash_name(name))
 
     def __str__(self):
         return self.name

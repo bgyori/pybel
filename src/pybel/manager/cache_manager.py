@@ -1461,7 +1461,7 @@ class InsertManager(NamespaceManager, AnnotationManager, LookupManager):
             self.object_cache_author[name] = author
             return author
 
-        author = self.object_cache_author[name] = Author(name=name)
+        author = self.object_cache_author[name] = Author.from_name(name)
         self.session.add(author)
         return author
 
